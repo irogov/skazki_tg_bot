@@ -17,7 +17,7 @@ async def process_group_n_tale(message: Message, group, conn):
     tale_id, tale_text = await fetch_tale(conn=conn, user_tel_id=user_tel_id, group=group)
     await add_tale_to_tales_for_users(conn=conn, user_tel_id=user_tel_id, tale_id=tale_id)
     tale_list = prepare_book(tale_text)
-    await answer_photo(message=message)
+    # await answer_photo(message=message)
     for page in tale_list.values():
         await message.answer(page)
         await asyncio.sleep(0.3)
