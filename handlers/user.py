@@ -5,6 +5,7 @@ from database.crud import add_user, fetch_tale, add_tale_to_tales_for_users
 from lexicon.lexicon import LEXICON_RU
 from keyboards.kb import age_keyboard
 from services.fairytale import prepare_book
+import asyncio
 
 from assets.other import answer_photo
 import random
@@ -19,6 +20,7 @@ async def process_group_n_tale(message: Message, group, conn):
     await answer_photo(message=message)
     for page in tale_list.values():
         await message.answer(page)
+        await asyncio.sleep(0.3)
 
 @user_router.message(CommandStart())
 async def process_start_command(message: Message, **kwargs):
