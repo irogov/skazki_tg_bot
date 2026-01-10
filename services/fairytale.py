@@ -42,37 +42,42 @@ async def get_story(group: int, client: AsyncOpenAI):
     ) 
     return response.choices[0].message.content, new_group
 
-# Функция, возвращающая строку с текстом страницы и её размер
 def _get_part_text(text: str, start: int, size: int) -> tuple[str, int]:
-    end_signs = ',.!:;?'
-    counter = 0
-    if len(text) < start + size:
-        size = len(text) - start
-        text = text[start:start + size]
-    else:
-        if text[start + size] == '.' and text[start + size - 1] in end_signs:
-            text = text[start:start + size - 2]
-            size -= 2
-        else:
-            text = text[start:start + size]
-        for i in range(size - 1, 0, -1):
-            if text[i] in end_signs:
-                break
-            counter = size - i
-    page_text = text[:size - counter]
-    page_size = size - counter
-    return page_text, page_size
+    """Возвращает текст страницы и его реальный размер"""
+    end_signs = {'.', '!', '?', ';', ':'}
+    
+    # Если кусок меньше лимита - возвращаем целиком
+    if start + size >= len(text):
+        return text[start:].strip(), len(text) - start
+    
+    # Берем кусок текста
+    chunk = text[start:start + size]
+    
+    # Ищем последний знак препинания в куске
+    for i in range(len(chunk) - 1, 20, -1):  # не раньше 20 символов от конца
+        if chunk[i] in end_signs:
+            # Обрезаем до знака + пробелы
+            page_end = i + 1
+            while page_end < len(chunk) and chunk[page_end].isspace():
+                page_end += 1
+            return chunk[:page_end].rstrip(), page_end
+    
+    # Если знаков нет - возвращаем весь кусок
+    return chunk.rstrip(), len(chunk)
 
-
-# Функция, формирующая словарь книги
-def prepare_book(text: str, page_size: int = 4000):
+def prepare_book(text: str, page_size: int = 3800):  # Telegram лимит ~4096
+    """Разбивает сказку на страницы"""
     book = {}
-    f = text
     page_count = 1
     start = 0
-    while start < len(f):
-        page_text, size = _get_part_text(f, start, page_size)
-        book[page_count] = page_text.lstrip()
-        page_count += 1
-        start += size
+    
+    while start < len(text):
+        page_text, actual_size = _get_part_text(text, start, page_size)
+        if page_text.strip():  # пропускаем пустые страницы
+            book[page_count] = page_text.strip()
+            page_count += 1
+        start += actual_size
+    
+
     return book
+
