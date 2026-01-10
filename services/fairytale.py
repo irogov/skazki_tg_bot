@@ -43,38 +43,41 @@ async def get_story(group: int, client: AsyncOpenAI):
     return response.choices[0].message.content, new_group
 
 def _get_part_text(text: str, start: int, size: int) -> tuple[str, int]:
-    """Возвращает текст страницы и его реальный размер"""
+    """Исправленная версия - правильно обрезает текущий кусок"""
     end_signs = {'.', '!', '?', ';', ':'}
     
-    # Если кусок меньше лимита - возвращаем целиком
+    # Если конец текста
     if start + size >= len(text):
-        return text[start:].strip(), len(text) - start
+        return text[start:].rstrip(), len(text) - start
     
-    # Берем кусок текста
-    chunk = text[start:start + size]
+    # Берем текущий кусок
+    chunk_end = min(start + size, len(text))
+    chunk = text[start:chunk_end]
     
-    # Ищем последний знак препинания в куске
-    for i in range(len(chunk) - 1, 20, -1):  # не раньше 20 символов от конца
+    # Ищем последний знак препинания в ЭТОМ куске
+    for i in range(len(chunk) - 1, 20, -1):  # не раньше 20 символов
         if chunk[i] in end_signs:
             # Обрезаем до знака + пробелы
             page_end = i + 1
-            while page_end < len(chunk) and chunk[page_end].isspace():
+            while (page_end < len(chunk) and 
+                   chunk[page_end] in ' \n\t'):
                 page_end += 1
             return chunk[:page_end].rstrip(), page_end
     
-    # Если знаков нет - возвращаем весь кусок
+    # Нет знаков - весь кусок
     return chunk.rstrip(), len(chunk)
 
-def prepare_book(text: str, page_size: int = 3800):  # Telegram лимит ~4096
-    """Разбивает сказку на страницы"""
+def prepare_book(text: str, page_size: int = 3800):
+    """Исправленная версия"""
     book = {}
     page_count = 1
     start = 0
     
     while start < len(text):
         page_text, actual_size = _get_part_text(text, start, page_size)
-        if page_text.strip():  # пропускаем пустые страницы
+        if page_text.strip():  # пропускаем пустые
             book[page_count] = page_text.strip()
+            print(f"Страница {page_count}: {len(page_text)} символов")
             page_count += 1
         start += actual_size
     
