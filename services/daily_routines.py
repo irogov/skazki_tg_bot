@@ -1,13 +1,15 @@
-from services.fairytale import get_story, prepare_book
+from services.fairytale import get_story, prepare_book, normalize_text
 from aiogram import Bot
 from config.config import Config
 import random
 from assets.other import send_fairy_picture
 
+
 async def send_daily_story(bot: Bot, config: Config, client):
     random_group = random.choice([1, 2, 3])
     tale, group = await get_story(random_group, client)
-    tales = prepare_book(tale)
+    tale_normalized = normalize_text(tale)
+    tales = prepare_book(tale_normalized)
     channel = config.channel_id
     link_to_bot = 'Нужно больше сказок и баек? Подпишись на наш бот ' \
     '<a href="https://t.me/skazki_i_baiki_bot">Сказки и байки Бот</a>.'
