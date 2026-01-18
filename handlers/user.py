@@ -4,7 +4,7 @@ from aiogram.filters import CommandStart
 from database.crud import add_user, fetch_tale, add_tale_to_tales_for_users
 from lexicon.lexicon import LEXICON_RU
 from keyboards.kb import age_keyboard
-from services.fairytale import prepare_book
+from services.fairytale import prepare_book, normalize_text
 import asyncio
 
 from assets.other import answer_photo
@@ -16,12 +16,13 @@ async def process_group_n_tale(message: Message, group, conn):
     user_tel_id = message.from_user.id
     tale_id, tale_text = await fetch_tale(conn=conn, user_tel_id=user_tel_id, group=group)
     await add_tale_to_tales_for_users(conn=conn, user_tel_id=user_tel_id, tale_id=tale_id)
-    tale_list = prepare_book(tale_text)
+    tale_text_normalized = normalize_text(tale_text)
+    tale_list = prepare_book(tale_text_normalized)
     await answer_photo(message=message)
-    await asyncio.sleep(0.5)
+    await asyncio.sleep(1)
     for page in tale_list.values():
         await message.answer(page)
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(1)
 
 @user_router.message(CommandStart())
 async def process_start_command(message: Message, **kwargs):
