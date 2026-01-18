@@ -53,6 +53,17 @@ async def main():
                             )
                         '''
                     )
+                    await cursor.execute(
+                        '''
+                            CREATE TABLE IF NOT EXISTS subscriptions (
+                                user_tel_id BIGINT NOT NULL REFERENCES Users(user_tel_id) ON DELETE CASCADE,
+                                subscribed_until TIMESTAMPTZ NOT NULL
+                            );
+
+                            CREATE UNIQUE INDEX IF NOT EXISTS subscriptions_user_tel_id_uidx
+                                ON subscriptions(user_tel_id);
+                        '''
+                    )
     except Error as db_error:
         print("Database-specific error: %s", db_error)
     except Exception as e:

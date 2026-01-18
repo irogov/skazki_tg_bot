@@ -48,11 +48,11 @@ async def main(config: Config, bot: Bot):
 
     scheduler.add_job(
         db_daily_population,
-        # 'cron',
-        # hour=11,
-        # minute=14,
-        'interval',
-        minutes=1,
+        'cron',
+        hour=0,
+        minute=0,
+        # 'interval',
+        # minutes=1,
         args=[db_pool, client],
         timezone="Europe/Moscow"
     )
