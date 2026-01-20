@@ -13,16 +13,17 @@ import random
 user_router = Router()
 
 async def process_group_n_tale(message: Message, group, conn):
+    to_sleep = 1
     user_tel_id = message.from_user.id
     tale_id, tale_text = await fetch_tale(conn=conn, user_tel_id=user_tel_id, group=group)
     await add_tale_to_tales_for_users(conn=conn, user_tel_id=user_tel_id, tale_id=tale_id)
     tale_text_normalized = normalize_text(tale_text)
     tale_list = prepare_book(tale_text_normalized)
     await answer_photo(message=message)
-    await asyncio.sleep(1)
+    await asyncio.sleep(to_sleep)
     for page in tale_list.values():
         await message.answer(page)
-        await asyncio.sleep(1)
+        await asyncio.sleep(to_sleep)
 
 @user_router.message(CommandStart())
 async def process_start_command(message: Message, **kwargs):
