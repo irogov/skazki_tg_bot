@@ -50,7 +50,7 @@ async def main(config: Config, bot: Bot):
         db_daily_population,
         'cron',
         hour=0,
-        minute=0,
+        minute=45,
         args=[db_pool, client],
         timezone="Europe/Moscow",
         id="daily_fairytales",
