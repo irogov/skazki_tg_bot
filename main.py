@@ -8,7 +8,6 @@ from handlers.user import user_router
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
-
 logger = logging.getLogger(__name__)
 
 config = load_config()

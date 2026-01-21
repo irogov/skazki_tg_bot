@@ -13,7 +13,7 @@ import random
 user_router = Router()
 
 async def process_group_n_tale(message: Message, group, conn):
-    to_sleep = 1
+    to_sleep = 5
     user_tel_id = message.from_user.id
     tale_id, tale_text = await fetch_tale(conn=conn, user_tel_id=user_tel_id, group=group)
     await add_tale_to_tales_for_users(conn=conn, user_tel_id=user_tel_id, tale_id=tale_id)
