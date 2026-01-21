@@ -1,4 +1,4 @@
-from services.fairytale import get_story, prepare_book, normalize_text
+from services.fairytale import get_story, prepare_book, ultra_clean
 from aiogram import Bot
 from config.config import Config
 import random, asyncio
@@ -9,7 +9,7 @@ async def send_daily_story(bot: Bot, config: Config, client):
     random_group = random.choice([1, 2, 3])
     to_sleep = 1
     tale, group = await get_story(random_group, client)
-    tale_normalized = normalize_text(tale)
+    tale_normalized = ultra_clean(tale)
     tales = prepare_book(tale_normalized)
     channel = config.channel_id
     link_to_bot = 'Нужно больше сказок и баек? Подпишись на наш бот ' \

@@ -79,6 +79,12 @@ def prepare_book(text: str, page_size: int = 3800):
 
     return book
 
-def normalize_text(text: str) -> str:
-    # убираем управляющие символы, кроме переноса строк и табов
-    return ''.join(ch for ch in text if ch.isprintable() or ch in '\n\t')
+def ultra_clean(text: str) -> str:
+    """УБИВАЕТ все проблемные символы"""
+    result = []
+    for char in text:
+        if (char.isalnum() or      # буквы и цифры
+            char in ' .,?!:;—-()[]«»""\n\t' or  # разрешённые знаки
+            char.isspace()):         # пробелы
+            result.append(char)
+    return ''.join(result).strip()
