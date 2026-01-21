@@ -43,29 +43,24 @@ async def get_story(group: int, client: AsyncOpenAI):
     return response.choices[0].message.content, new_group
 
 def _get_part_text(text: str, start: int, size: int) -> tuple[str, int]:
-    """Исправленная версия - правильно обрезает текущий кусок"""
     end_signs = {'.', '!', '?', ';', ':'}
     
-    # Если конец текста
-    if start + size >= len(text):
-        return text[start:].rstrip(), len(text) - start
+    # ✅ КЛЮЧЕВОЕ: если конец текста — БЕРЁМ ВСЁ
+    end_pos = min(start + size, len(text))
+    if end_pos >= len(text):
+        return text[start:end_pos].rstrip(), end_pos - start
     
-    # Берем текущий кусок
-    chunk_end = min(start + size, len(text))
-    chunk = text[start:chunk_end]
-    
-    # Ищем последний знак препинания в ЭТОМ куске
-    for i in range(len(chunk) - 1, 20, -1):  # не раньше 20 символов
+    # Обычная логика для промежуточных кусков
+    chunk = text[start:end_pos]
+    for i in range(len(chunk) - 1, 20, -1):
         if chunk[i] in end_signs:
-            # Обрезаем до знака + пробелы
             page_end = i + 1
-            while (page_end < len(chunk) and 
-                   chunk[page_end] in ' \n\t'):
+            while page_end < len(chunk) and chunk[page_end].isspace():
                 page_end += 1
             return chunk[:page_end].rstrip(), page_end
     
-    # Нет знаков - весь кусок
     return chunk.rstrip(), len(chunk)
+
 
 def prepare_book(text: str, page_size: int = 3800):
     """Исправленная версия"""
