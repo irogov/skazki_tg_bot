@@ -51,10 +51,11 @@ async def main(config: Config, bot: Bot):
         'cron',
         hour=0,
         minute=0,
-        # 'interval',
-        # minutes=1,
         args=[db_pool, client],
-        timezone="Europe/Moscow"
+        timezone="Europe/Moscow",
+        id="daily_fairytales",
+        replace_existing=True,
+        misfire_grace_time=600  # 10 мин на генерацию 50 сказок
     )
 
     scheduler.start()
