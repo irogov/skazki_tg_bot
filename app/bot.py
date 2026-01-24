@@ -38,10 +38,10 @@ async def main(config: Config, bot: Bot):
     scheduler = AsyncIOScheduler()
     scheduler.add_job(
         send_daily_story,
-        # 'interval',
-        # minutes=5,
-        'cron',
-        hour=19,
+        'interval',
+        minutes=2,
+        # 'cron',
+        # hour=19,
         args=[bot, config, client],  # Передаем экземпляр бота в функцию
         timezone="Europe/Moscow",
     )
@@ -49,8 +49,8 @@ async def main(config: Config, bot: Bot):
     scheduler.add_job(
         db_daily_population,
         'cron',
-        hour=2,
-        minute=15,
+        hour=0,
+        minute=0,
         args=[db_pool, client],
         timezone="Europe/Moscow",
         id="daily_fairytales",
