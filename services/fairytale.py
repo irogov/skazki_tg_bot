@@ -39,7 +39,7 @@ async def get_story(group: int, client: AsyncOpenAI):
     response = await client.chat.completions.create(
         model="deepseek-chat",
         messages=messages,
-        max_tokens=20000,
+        max_tokens=8000,
         temperature=0.7
     ) 
     return response.choices[0].message.content, new_group
