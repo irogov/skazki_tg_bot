@@ -8,8 +8,7 @@ CURRENCY = 'RUB'
 config =load_config()
 
 async def buy(message: types.Message):
-    if config.pay_set.payments_token.split(':')[1] == 'TEST':
-        await message.answer('Тестовый платеж!!!')
+    
     await message.answer(f"🚀 Отправляю инвойс для {message.from_user.id}")
     try:
         await message.bot.send_invoice(
