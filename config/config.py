@@ -47,7 +47,7 @@ def load_config(path: str | None = None):
         password=env("POSTGRES_PASSWORD"),
     )
     ps = PaymentsSettings(
-        payments_token=env('PAYMENTS_TOKEN')
+        payments_token=env('TEST_TOKEN')
     )
 
     return Config(
