@@ -11,7 +11,8 @@ async def buy(message: types.Message):
     if config.pay_set.payments_token.split(':')[1] == 'TEST':
         await message.answer('Тестовый платеж!!!')
     await message.answer(f"🚀 Отправляю инвойс для {message.from_user.id}")
-    await message.bot.send_invoice(
+    try:
+        await message.bot.send_invoice(
         chat_id=message.chat.id,
         title='Подписка на бота на 1 месяц',
         description='Активация подписки',
@@ -21,4 +22,6 @@ async def buy(message: types.Message):
         start_parameter='one-month-subscription',
         payload=f'sub_30days_{message.from_user.id}'  # ✅ Уникальный payload
     )
+    except Exception as e:
+        await message.answer(e)
     await message.answer("✅ Инвойс отправлен!")
