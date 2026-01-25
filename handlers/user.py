@@ -5,6 +5,7 @@ from database.crud import add_user, fetch_tale, add_tale_to_tales_for_users
 from lexicon.lexicon import LEXICON_RU
 from keyboards.kb import age_keyboard
 from services.fairytale import prepare_book, ultra_clean
+from services.payment_service import buy
 
 from assets.other import answer_photo
 import random, asyncio
@@ -31,7 +32,8 @@ async def process_start_command(message: Message, **kwargs):
     conn = kwargs.get('conn')
     user_tel_id = message.from_user.id
     await add_user(conn=conn, user_tel_id=user_tel_id)
-    await message.answer(LEXICON_RU['/start'], reply_markup=age_keyboard)
+    # await message.answer(LEXICON_RU['/start'], reply_markup=age_keyboard)
+    await buy(message)
 
 @user_router.message(F.text == LEXICON_RU['1'])
 async def return_group_one_tale(message: Message, **kwargs):
@@ -52,8 +54,5 @@ async def return_group_one_tale(message: Message, **kwargs):
 async def process_help_command(message: Message):
     await message.answer(LEXICON_RU['/help'], reply_markup=age_keyboard)
 
-@user_router.message()
-async def process_other_messages(message: Message):
-    await message.answer(LEXICON_RU['other'])
 
     

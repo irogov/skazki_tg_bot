@@ -74,7 +74,6 @@ def prepare_book(text: str, page_size: int = 3800):
         page_text, actual_size = _get_part_text(text, start, page_size)
         if page_text.strip():  # пропускаем пустые
             book[page_count] = page_text.strip()
-            print(f"Страница {page_count}: {len(page_text)} символов")
             page_count += 1
         start += actual_size
     

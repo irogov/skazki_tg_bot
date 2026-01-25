@@ -19,12 +19,17 @@ class DatabaseSettings:
     password: str
 
 @dataclass
+class PaymentsSettings:
+    payments_token: str
+
+@dataclass
 class Config:
     bot: TgBot
     log: LogSettings
     db: DatabaseSettings
     ai: str
     channel_id: str
+    pay_set: PaymentsSettings
 
 def load_config(path: str | None = None):
     env = Env()
@@ -41,6 +46,9 @@ def load_config(path: str | None = None):
         user=env("POSTGRES_USER"),
         password=env("POSTGRES_PASSWORD"),
     )
+    ps = PaymentsSettings(
+        payments_token=env('PAYMENTS_TOKEN')
+    )
 
     return Config(
         bot=TgBot(token=token),
@@ -50,5 +58,6 @@ def load_config(path: str | None = None):
         ),
         db=db,
         ai=env('DEEPSEEK_API_KEY'),
-        channel_id=env('CHANNEL_ID')
+        channel_id=env('CHANNEL_ID'),
+        pay_set=ps
     )

@@ -4,6 +4,7 @@ from aiogram import Bot, Dispatcher
 from database.connection import get_pg_pool
 import psycopg_pool
 from handlers.user import user_router
+from handlers.payments import payment_router
 from config.config import Config, load_config
 from middleware.database_mw import DataBaseMiddleware
 from services.daily_routines import send_daily_story
@@ -29,7 +30,8 @@ async def main(config: Config, bot: Bot):
     client = AsyncOpenAI(api_key=deepseek_key, base_url="https://api.deepseek.com")
 
     logger.info('Getting routers')
-    dp.include_routers(user_router)
+    dp.include_router(user_router)
+    dp.include_router(payment_router)
 
     # Подключаем миддлвари в нужном порядке
     logger.info("Including middlewares...")
