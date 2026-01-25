@@ -11,7 +11,8 @@ async def buy(message: types.Message):
     if config.pay_set.payments_token.split(':')[1] == 'TEST':
         await message.answer('Тестовый платеж!!!')
     
-    await message.answer_invoice(
+    await message.bot.send_invoice(
+        chat_id=message.chat.id,
         title='Подписка на бота на 1 месяц',
         description='Активация подписки',
         provider_token=config.pay_set.payments_token,
