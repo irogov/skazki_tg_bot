@@ -1,7 +1,7 @@
 from aiogram import F, Router
 from aiogram.types import Message
 from aiogram.filters import CommandStart
-from database.crud import add_user, fetch_tale, add_tale_to_tales_for_users
+from database.crud import register_user, fetch_tale, add_tale_to_tales_for_users, check_subscription
 from lexicon.lexicon import LEXICON_RU
 from keyboards.kb import age_keyboard
 from services.fairytale import prepare_book, ultra_clean
@@ -31,24 +31,38 @@ async def process_group_n_tale(message: Message, group, conn):
 async def process_start_command(message: Message, **kwargs):
     conn = kwargs.get('conn')
     user_tel_id = message.from_user.id
-    await add_user(conn=conn, user_tel_id=user_tel_id)
-    # await message.answer(LEXICON_RU['/start'], reply_markup=age_keyboard)
-    await buy(message)
+    await register_user(conn=conn, user_tel_id=user_tel_id)
+    if await check_subscription(conn, user_tel_id):
+        await message.answer(LEXICON_RU['/start'], reply_markup=age_keyboard)
+    else:
+        await buy(message)
 
 @user_router.message(F.text == LEXICON_RU['1'])
 async def return_group_one_tale(message: Message, **kwargs):
     conn = kwargs.get('conn')
-    await process_group_n_tale(message, 1, conn)
+    user_tel_id = message.from_user.id
+    if await check_subscription(conn, user_tel_id):
+        await process_group_n_tale(message, 1, conn)
+    else:
+        await buy(message)
 
 @user_router.message(F.text == LEXICON_RU['2'])
 async def return_group_one_tale(message: Message, **kwargs):
     conn = kwargs.get('conn')
-    await process_group_n_tale(message, 2, conn)
+    user_tel_id = message.from_user.id
+    if await check_subscription(conn, user_tel_id):
+        await process_group_n_tale(message, 2, conn)
+    else:
+        await buy(message)
 
 @user_router.message(F.text == LEXICON_RU['3'])
 async def return_group_one_tale(message: Message, **kwargs):
     conn = kwargs.get('conn')
-    await process_group_n_tale(message, 3, conn)
+    user_tel_id = message.from_user.id
+    if await check_subscription(conn, user_tel_id):
+        await process_group_n_tale(message, 3, conn)
+    else:
+        await buy(message)
 
 @user_router.message(F.text=='/help')
 async def process_help_command(message: Message):

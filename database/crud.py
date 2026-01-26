@@ -1,5 +1,6 @@
 from database.connection import get_pg_connection, db_name, host, port, user, password
 from psycopg import AsyncConnection
+from datetime import datetime, timedelta, timezone
 from services.fairytale import get_story
 
 async def add_tale(tale_text, tale_group, rating):
@@ -105,3 +106,52 @@ async def fetch_tale(conn: AsyncConnection, user_tel_id, group):
             (group, user_tel_id)
         )
         return await data.fetchone()
+    
+async def add_user_to_subscription(conn: AsyncConnection, user_tel_id):
+    async with conn.cursor() as cursor:
+        await cursor.execute(
+            '''
+            INSERT INTO subscriptions(user_tel_id)
+            VALUES(%s)
+            ''',
+            (user_tel_id,)
+        )
+    
+async def register_user(conn: AsyncConnection, user_tel_id):
+    async with conn.cursor() as cursor:
+        data = await cursor.execute(
+            '''
+            SELECT user_id
+            FROM users
+            WHERE user_tel_id = %s
+            ''',
+            (user_tel_id,)
+        )
+        if data:
+            await add_user(conn, user_tel_id=user_tel_id)
+            await add_user_to_subscription(conn, user_tel_id)
+
+async def check_subscription(conn: AsyncConnection, user_tel_id):
+    async with conn.cursor() as cursor:
+        data = await cursor.execute(
+            '''
+            SELECT subscribed_until
+            FROM subscriptions
+            WHERE user_tel_id = %s
+            ''',
+            (user_tel_id,)
+        )
+        data = await data.fetchone()
+        return datetime.now(timezone.utc) < data[0]
+    
+async def update_subscription_thirty_days(conn: AsyncConnection, user_tel_id):
+    time = datetime.now() + timedelta(days=30)
+    async with conn.cursor() as cursor:
+        await cursor.execute(
+            '''
+            UPDATE subscriptions
+            SET subscribed_until = %s
+            WHERE user_tel_id = %s
+            ''',
+            (time, user_tel_id)
+        )

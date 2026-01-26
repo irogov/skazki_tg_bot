@@ -8,19 +8,13 @@ CURRENCY = 'RUB'
 config =load_config()
 
 async def buy(message: types.Message):
-    
-    await message.answer(f"🚀 Отправляю инвойс для {message.from_user.id}")
-    try:
-        await message.bot.send_invoice(
-        chat_id=message.chat.id,
-        title='Подписка на бота на 1 месяц',
-        description='Активация подписки',
-        provider_token=config.pay_set.payments_token,
-        currency=CURRENCY,
-        prices=[PRICE],
-        start_parameter='one-month-subscription',
-        payload=f'sub_30days_{message.from_user.id}'  # ✅ Уникальный payload
-    )
-    except Exception as e:
-        await message.answer(e)
-    await message.answer("✅ Инвойс отправлен!")
+    await message.bot.send_invoice(
+    chat_id=message.chat.id,
+    title='Подписка на бота на 1 месяц',
+    description='Активация подписки',
+    provider_token=config.pay_set.payments_token,
+    currency=CURRENCY,
+    prices=[PRICE],
+    start_parameter='one-month-subscription',
+    payload=f'sub_30days_{message.from_user.id}'  # ✅ Уникальный payload
+)
