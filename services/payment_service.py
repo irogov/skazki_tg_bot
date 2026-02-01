@@ -8,6 +8,7 @@ CURRENCY = 'RUB'
 config =load_config()
 
 async def buy(message: types.Message):
+
     await message.bot.send_invoice(
     chat_id=message.chat.id,
     title='Подписка на бота на 1 месяц',
@@ -15,6 +16,7 @@ async def buy(message: types.Message):
     provider_token=config.pay_set.payments_token,
     currency=CURRENCY,
     prices=[PRICE],
+    need_email=True,
     start_parameter='one-month-subscription',
     payload=f'sub_30days_{message.from_user.id}'  # ✅ Уникальный payload
 )
