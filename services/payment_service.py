@@ -1,11 +1,47 @@
 from aiogram import types, Router, Bot
 from aiogram.filters import Command
 from config.config import load_config
+import json
 
-PRICE = types.LabeledPrice(label='Подиска на 1 месяц', amount=29900)
+price_rub = 299
+PRICE = types.LabeledPrice(label='Подиска на 1 месяц', amount=price_rub * 100)
 CURRENCY = 'RUB'
 
 config =load_config()
+
+provider_data = json.dumps({
+
+"receipt": {
+
+"items": [
+
+{
+
+"description": "Название",
+
+"quantity": 1,
+
+"amount": {
+
+"value": price_rub,
+
+"currency": CURRENCY
+
+},
+
+"vat_code": 1,
+
+"payment_mode": "full_payment",
+
+"payment_subject": "service"
+
+}
+
+]
+
+}
+
+})
 
 async def buy(message: types.Message):
 
