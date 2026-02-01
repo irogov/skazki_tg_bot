@@ -23,7 +23,7 @@ provider_data = json.dumps({
 
 "amount": {
 
-"value": f'{price_rub}.00',
+"value": price_rub,
 
 "currency": CURRENCY
 
