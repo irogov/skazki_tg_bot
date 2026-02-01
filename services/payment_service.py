@@ -53,8 +53,8 @@ async def buy(message: types.Message):
     currency=CURRENCY,
     prices=[PRICE],
     need_email=True,
-    is_flexible=False,
     send_email_to_provider = True,
+    is_flexible=False,
     start_parameter='one-month-subscription',
     provider_data=provider_data,
     payload=f'sub_30days_{message.from_user.id}'  # ✅ Уникальный payload
