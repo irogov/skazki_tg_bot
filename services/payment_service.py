@@ -17,13 +17,13 @@ provider_data = json.dumps({
 
 {
 
-"description": "Название",
+"description": "Подиска на 1 месяц",
 
 "quantity": 1,
 
 "amount": {
 
-"value": price_rub,
+"value": f'{price_rub}.00',
 
 "currency": CURRENCY
 
@@ -53,6 +53,7 @@ async def buy(message: types.Message):
     currency=CURRENCY,
     prices=[PRICE],
     need_email=True,
+    is_flexible=False,
     send_email_to_provider = True,
     start_parameter='one-month-subscription',
     provider_data=provider_data,
