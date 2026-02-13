@@ -27,7 +27,7 @@ async def db_daily_population(db_pool, client):
         try:
             async with conn.cursor() as cur:
                 for gr in range(1, 4):
-                    for _ in range(30):
+                    for _ in range(10):
                         tale_text, group = await get_story(gr, client)
                         await cur.execute(
                             '''
