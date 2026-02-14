@@ -114,13 +114,15 @@ async def add_user_to_subscription(conn: AsyncConnection, user_tel_id):
             '''
             INSERT INTO subscriptions(user_tel_id)
             VALUES(%s)
+            ON CONFLICT (user_tel_id) DO NOTHING
             ''',
             (user_tel_id,)
         )
     
 async def register_user(conn: AsyncConnection, user_tel_id):
     async with conn.cursor() as cursor:
-        data = await cursor.execute(
+        # Проверяем, существует ли пользователь
+        await cursor.execute(
             '''
             SELECT user_id
             FROM users
@@ -128,13 +130,19 @@ async def register_user(conn: AsyncConnection, user_tel_id):
             ''',
             (user_tel_id,)
         )
-        if data:
+        existing_user = await cursor.fetchone()
+        
+        # Если пользователь не существует, регистрируем его
+        if not existing_user:
             await add_user(conn, user_tel_id=user_tel_id)
             await add_user_to_subscription(conn, user_tel_id)
+            return True  # Пользователь зарегистрирован
+        else:
+            return False  # Пользователь уже существовал
 
 async def check_subscription(conn: AsyncConnection, user_tel_id):
     async with conn.cursor() as cursor:
-        data = await cursor.execute(
+        await cursor.execute(
             '''
             SELECT subscribed_until
             FROM subscriptions
@@ -142,8 +150,14 @@ async def check_subscription(conn: AsyncConnection, user_tel_id):
             ''',
             (user_tel_id,)
         )
-        data = await data.fetchone()
-        return datetime.now(timezone.utc) < data[0]
+        result = await cursor.fetchone()
+        
+        # Проверяем, существует ли запись
+        if result is None or result[0] is None:
+            return False  # Нет подписки или запись не найдена
+        
+        # Сравниваем дату окончания с текущим временем
+        return datetime.now(timezone.utc) < result[0]
     
 async def update_subscription_thirty_days(conn: AsyncConnection, user_tel_id):
     time = datetime.now() + timedelta(days=30)
