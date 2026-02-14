@@ -27,11 +27,11 @@ async def send_daily_story(bot: Bot, config: Config, client):
         except Exception as e:
             return False
         
-    # try:
-    #     await bot.send_message(chat_id=channel, text=link_to_bot, parse_mode='HTML')
-    #     await asyncio.sleep(to_sleep)
-    # except Exception as e:
-    #     return False
+    try:
+        await bot.send_message(chat_id=channel, text=link_to_bot, parse_mode='HTML')
+        await asyncio.sleep(to_sleep)
+    except Exception as e:
+        return False
     return True
 
 # async def db_daily_population(client):
