@@ -48,6 +48,7 @@ async def add_user(conn: AsyncConnection, user_tel_id):
             '''
             INSERT INTO Users(user_tel_id, is_alive, banned, role, paid)
             VALUES(%s, %s, %s, %s, %s)
+            ON CONFLICT (user_tel_id) DO NOTHING
             ''',
             (user_tel_id, True, False, 'user', False)
         )
