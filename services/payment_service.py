@@ -48,7 +48,7 @@ async def buy(message: types.Message):
     await message.bot.send_invoice(
     chat_id=message.chat.id,
     title='Подписка на бота на 1 месяц',
-    description='Активация подписки',
+    description='Каждый день мы пишем 30 сказок для разных возрастов ✏️ Подписываясь на 1 месяц ты получишь доступ к ❗️900❗️ сказкам за период подписки!',
     provider_token=config.pay_set.payments_token,
     currency=CURRENCY,
     prices=[PRICE],
@@ -57,5 +57,10 @@ async def buy(message: types.Message):
     is_flexible=False,
     start_parameter='one-month-subscription',
     provider_data=provider_data,
-    payload=f'sub_30days_{message.from_user.id}'
+    payload=f'sub_30days_{message.from_user.id}',
+    # photo_url="AgACAgIAAxkBAAFCa5RpkGmdZIP7Kmv04J8GmIML0SlreAACXhZrGyHSgUh7WTjxSIGt3AEAAwIAA3gAAzoE",
+    photo_url='https://sun9-12.userapi.com/s/v1/ig2/elIxpfzPJYbuQQuf7kcWaX8B-W2Stw4gEuPPQT-baBQF_EWdo9yk9LvmaFvDJOYI2uAZLzSGBVVrKvMDltANXnWa.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440,2048x2048&from=bu&u=JGYCoILlHrRoYvB2DXLpqaa185FWv7YZN_UuS5WWFwI&cs=640x0',
+    photo_size=568806,
+    photo_height=2048,
+    photo_width=2048
 )
