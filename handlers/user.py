@@ -23,7 +23,7 @@ async def process_group_n_tale(message: Message, group, conn):
     await asyncio.sleep(to_sleep)
 
     for page in tale_list.values():
-        await message.answer(page)
+        await message.answer(page, protect_content=True)
         await asyncio.sleep(to_sleep)
 
 
